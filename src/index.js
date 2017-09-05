@@ -19,5 +19,4 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Hello
-app.listen(8080, () => console.log('Listening on 8080!'));
+app.listen(8080, () => console.log('Listening on 8080!')); // eslint-disable-line
