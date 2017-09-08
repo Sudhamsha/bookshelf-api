@@ -14,6 +14,7 @@ const schema = new mongoose.Schema(
     },
     passwordHash: { type: String, required: true },
     confirmed: { type: Boolean, default: false },
+    confirmationToken: { type: String, default: '' },
   },
   { timestamp: true },
 );
@@ -30,6 +31,7 @@ schema.methods.generateJWT = function generateJWT() {
   return jwt.sign(
     {
       email: this.email,
+      confirmed: this.confirmed,
     },
     process.env.JWT_SECRET,
   );
@@ -41,6 +43,14 @@ schema.methods.toAuthJSON = function toAuthJSON() {
     confirmed: this.confirmed,
     token: this.generateJWT(),
   };
+};
+
+schema.methods.setConfirmationToken = function setConfirmationToken() {
+  this.confirmationToken = this.generateJWT();
+};
+
+schema.methods.generateConfirmationUrl = function setConfirmationToken() {
+  return `${process.env.HOST}/confirmation/${this.confirmationToken}`;
 };
 
 schema.plugin(uniqueValidator, { message: 'This email is already taken!' });
